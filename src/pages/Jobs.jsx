@@ -37,7 +37,11 @@ const CATEGORIES = [
 const Jobs = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const query = Object.fromEntries(searchParams.entries());
-  const { currentData, isFetching: loading, error: queryError } = useGetJobsQuery({ page: 1, limit: 9, ...query });
+  const {
+    currentData,
+    isFetching: loading,
+    error: queryError,
+  } = useGetJobsQuery({ page: 1, limit: 9, ...query });
   const jobs = currentData?.jobs || [];
   const meta = currentData || { page: 1, pages: 1, total: 0 };
   const error = queryError?.message;
@@ -86,7 +90,14 @@ const Jobs = () => {
 
   return (
     <Container className="py-4 py-lg-5">
-      <div className="job-page-title"><div className="eyebrow">FIND YOUR KIND OF WORK</div><h1>A new chapter awaits.</h1><p className="text-secondary">Explore opportunities that fit your skills, your ambitions, and your life.</p></div>
+      <div className="job-page-title">
+        <div className="eyebrow">FIND YOUR KIND OF WORK</div>
+        <h1>A new chapter awaits.</h1>
+        <p className="text-secondary">
+          Explore opportunities that fit your skills, your ambitions, and your
+          life.
+        </p>
+      </div>
       <div className="soft-card p-3 p-lg-4 mb-4">
         <SearchBar
           key={`${query.keyword || ""}:${query.location || ""}`}
@@ -146,11 +157,13 @@ const Jobs = () => {
           )}
 
           <Row className="g-3">
-            {!loading && !error && jobs.map((job) => (
-              <Col key={job._id} md={6}>
-                <JobCard job={job} />
-              </Col>
-            ))}
+            {!loading &&
+              !error &&
+              jobs.map((job) => (
+                <Col key={job._id} md={6}>
+                  <JobCard job={job} />
+                </Col>
+              ))}
           </Row>
 
           <Pagination

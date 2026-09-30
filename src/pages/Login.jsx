@@ -33,7 +33,13 @@ const Login = () => {
   }, [location.search]);
 
   useEffect(() => {
-    if (user) navigate(location.state?.from?.pathname ? `${location.state.from.pathname}${location.state.from.search || ""}` : homeFor(user.role), { replace: true });
+    if (user)
+      navigate(
+        location.state?.from?.pathname
+          ? `${location.state.from.pathname}${location.state.from.search || ""}`
+          : homeFor(user.role),
+        { replace: true },
+      );
   }, [user, navigate, location.state]);
 
   const handleChange = (event) => {
@@ -69,14 +75,37 @@ const Login = () => {
     }
 
     toast.success("Signed in");
-    const from = location.state?.from?.pathname ? `${location.state.from.pathname}${location.state.from.search || ""}` : null;
+    const from = location.state?.from?.pathname
+      ? `${location.state.from.pathname}${location.state.from.search || ""}`
+      : null;
     navigate(from || homeFor(result.user.role), { replace: true });
   };
 
   return (
     <Container className="auth-page">
       <Row className="align-items-center justify-content-between g-4">
-        <Col lg={5}><div className="auth-intro"><div className="eyebrow">YOUR NEXT CHAPTER STARTS HERE</div><h2>A little ambition.<br /><em>A world of possibility.</em></h2><p>Find work that fits your life, and people who share your drive.</p><div className="auth-point"><span>✓</span> Opportunities that match your skills</div><div className="auth-point"><span>✓</span> All your applications in one place</div><div className="auth-point"><span>✓</span> A simpler way to take the next step</div></div></Col>
+        <Col lg={5}>
+          <div className="auth-intro">
+            <div className="eyebrow">YOUR NEXT CHAPTER STARTS HERE</div>
+            <h2>
+              A little ambition.
+              <br />
+              <em>A world of possibility.</em>
+            </h2>
+            <p>
+              Find work that fits your life, and people who share your drive.
+            </p>
+            <div className="auth-point">
+              <span>✓</span> Opportunities that match your skills
+            </div>
+            <div className="auth-point">
+              <span>✓</span> All your applications in one place
+            </div>
+            <div className="auth-point">
+              <span>✓</span> A simpler way to take the next step
+            </div>
+          </div>
+        </Col>
         <Col lg={6}>
           <Card className="soft-card auth-card">
             <Card.Body className="p-4">
@@ -148,8 +177,6 @@ const Login = () => {
               </p>
             </Card.Body>
           </Card>
-
-
         </Col>
       </Row>
     </Container>

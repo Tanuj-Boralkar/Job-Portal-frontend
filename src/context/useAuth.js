@@ -9,7 +9,9 @@ export const useAuth = () => {
     try { const data = await dispatch(thunk(payload)).unwrap(); return { success: true, user: data.user, message: data.message }; }
     catch (error) { return { success: false, message: typeof error === 'string' ? error : error.message }; }
   };
-  return { ...auth, login: authenticate(loginUser), register: authenticate(registerUser),
+  return {
+    ...auth, login: authenticate(loginUser), register: authenticate(registerUser),
     logout: () => { dispatch(logout()); dispatch(jobsApi.util.resetApiState()); },
-    updateUser: partial => dispatch(updateUser(partial)) };
+    updateUser: partial => dispatch(updateUser(partial))
+  };
 };
