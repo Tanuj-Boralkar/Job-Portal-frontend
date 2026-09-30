@@ -1,50 +1,104 @@
-import axios from "axios"
+import axios from "axios";
 
+// ==========================================
+// API BASE URL
+// ==========================================
+
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  "https://job-portal-backend-sopc.onrender.com/api/v1";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "https://job-portal-backend-sopc.onrender.com/api/v1",
+  baseURL: API_URL,
   timeout: 15000,
-})
+});
+
+// ==========================================
+// REQUEST INTERCEPTOR
+// Add JWT token automatically
+// ==========================================
 
 api.interceptors.request.use(
   (config) => {
-    const stored = localStorage.getItem("userInfo")
+    const stored = localStorage.getItem("userInfo");
+
     if (stored) {
       try {
-        const { token } = JSON.parse(stored)
-        if (token) config.headers.Authorization = `Bearer ${token}`
+        const { token } = JSON.parse(stored);
+
+        if (token) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
       } catch {
-        localStorage.removeItem("userInfo")
+        localStorage.removeItem("userInfo");
       }
     }
 
-    return config
+    return config;
   },
   (error) => Promise.reject(error)
-)
+);
+
+// ==========================================
+// RESPONSE INTERCEPTOR
+// Logout when token expires
+// ==========================================
 
 api.interceptors.response.use(
   (response) => response,
+
   (error) => {
-    const status = error?.response?.status
-    const onAuthPage = ["/login", "/register"].includes(window.location.pathname)
+    const status = error?.response?.status;
+
+    const onAuthPage = ["/login", "/register"].includes(
+      window.location.pathname
+    );
 
     if (status === 401 && !onAuthPage) {
-      localStorage.removeItem("userInfo")
-      window.location.replace("/login?expired=1")
+      localStorage.removeItem("userInfo");
+
+      window.location.replace("/login?expired=1");
     }
-    return Promise.reject(error)
+
+    return Promise.reject(error);
   }
-)
+);
+
+// ==========================================
+// ERROR MESSAGE
+// ==========================================
 
 export const getErrorMessage = (error) =>
-  error?.response?.data?.message || error?.message || "something went wrong. please try again."
+  error?.response?.data?.message ||
+  error?.message ||
+  "Something went wrong. Please try again.";
 
-export default api
+// ==========================================
+// FILE / CLOUDINARY URL
+// ==========================================
 
-// Resolve backend-owned uploads when frontend and API use different hosts.
 export const assetUrl = (value) => {
-  if (!value || /^https?:\/\//i.test(value)) return value;
-  const base = import.meta.env.VITE_API_URL;
-  return base && /^https?:\/\//i.test(base) ? new URL(value, new URL(base).origin).href : value;
+  if (!value) {
+    return "";
+  }
+
+  // Cloudinary or any complete URL
+  // Use directly without modifying it
+  if (
+    value.startsWith("https://") ||
+    value.startsWith("http://")
+  ) {
+    return value;
+  }
+
+  // Support old local /uploads/... URLs
+  const backendOrigin = new URL(API_URL).origin;
+
+  const path = value.startsWith("/")
+    ? value
+    : `/${value}`;
+
+  return `${backendOrigin}${path}`;
 };
+
+export default api;
