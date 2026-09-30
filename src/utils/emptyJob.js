@@ -1,0 +1,15 @@
+export const emptyJob = {
+  title: "",
+  company: "",
+  location: "",
+  jobType: "Full Time",
+  workMode: "On-site",
+  salary: "",
+  experienceLevel: "Fresher",
+  skills: "",
+  category: "Software Development",
+  vacancies: 1,
+  deadline: "",
+  status: "active",
+  description: "",
+};
